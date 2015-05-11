@@ -1,0 +1,5 @@
+{
+  "css": {
+    "files": ["./test/css/deep/**/*.css", "./test/css/*.css"]
+  }
+}

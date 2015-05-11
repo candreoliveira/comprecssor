@@ -1,0 +1,33 @@
+*{ text-align: center; }
+[href='http://google.com']{ text-align: center; }
+a:hover{ text-align: center; }
+p,a.disabled1,div::after{text-align: center;}
+
+p,a.disabled1+#superId.superClass,div::after{text-align: center;}
+p, div.purchaseReason .text:hover > a.disbled::before {
+  font-size: 18px;
+}
+
+p,div{
+ /* div.scss */
+ /*div.scss*/
+ height: 10px;
+}
+
+p{} div.carlos{ height:5px }
+.gift-pack .checkbox-transform .form-clear {
+  left: -9999px;
+  position: fixed;
+  @inlcude opacity(0.5);
+}
+
+.prodGift a {}
+
+#id-test__bla {}
+
+/* line 243, ../../../../statics-default/scss/components/_gift_pack.scss */
+.prodGift a{
+  clear: both;
+  display: block;
+  padding: 15px 0 0 0;
+}
