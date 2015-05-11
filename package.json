@@ -27,6 +27,7 @@
   "author": "candreoliveira@gmail.com",
   "license": "MIT",
   "devDependencies": {
+    "async": "^0.9.0",
     "glob": "^5.0.5",
     "ramda": "^0.13.0",
     "ramda-fantasy": "^0.2.0",
