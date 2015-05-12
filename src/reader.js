@@ -1,19 +1,12 @@
 var fs = require('fs');
-var readline = require('readline');
-var stream = require('stream');
-
 module.exports = function(file) {
-  var instream = fs.createReadStream(file);
-  var outstream = new stream;
-  return readline.createInterface(instream, outstream);
+  return fs.createReadStream(file);
 
-  // rl.on('line', function(line) {
-  //   // process line here
-  //   H.log(line);
+  // readableStream.on('data', function(chunk) {
+  //     data+=chunk;
   // });
 
-  // rl.on('close', function() {
-  //   // do something on finish here
-  //   H.log("FIM");
+  // readableStream.on('end', function() {
+  //     console.log(data);
   // });
 }
