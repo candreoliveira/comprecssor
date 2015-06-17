@@ -4,7 +4,10 @@
     "files": ["./test/css/**/*.css", "./test/css/*.css"]
   },
   "output": {
-    "prefix": "generated",
-    "suffix": "comprecssor"
+    "css": {
+      "prefix": "generated",
+      "suffix": "comprecssor",
+      "path": ".tmp/css"
+    }
   }
 }

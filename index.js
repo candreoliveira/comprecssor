@@ -20,11 +20,24 @@ var C = require('./src/css')(R);
 // CONFIG FILES
 //
 
+var defaultConfig = {
+  "mapFile": "map.comprecssor.json",
+  "output": {
+    "css": {
+      "prefix": "",
+      "suffix": "comprecssor",
+      "path": ""
+    }
+  }
+};
+
 var config = require('./test/config/config.json') || {};
 
 //
 // AUXILIARY FUNCTIONS
 //
+
+var getConfig = R.merge(defaultConfig);
 
 var error = R.ifElse(R.isNil, R.identity, H.error);
 
@@ -69,6 +82,7 @@ var regenerateCss = R.curry(function(config, file, map) {
             S(R.concat, S, '\.')),
         R.propOr('', 'prefix'))),
     H.Maybe,
+    R.prop('css'),
     R.prop('output'));
 
   var suffix = R.compose(
@@ -83,6 +97,7 @@ var regenerateCss = R.curry(function(config, file, map) {
               S(R.concat, S, '\.css'))),
         R.propOr('', 'suffix'))),
     H.Maybe,
+    R.prop('css'),
     R.prop('output'));
 
   var hasSuffix = R.compose(
@@ -95,6 +110,7 @@ var regenerateCss = R.curry(function(config, file, map) {
             testPrefixOrSuffix),
         R.propOr('', 'suffix'))),
     H.Maybe,
+    R.prop('css'),
     R.prop('output')
   );
 
@@ -108,6 +124,7 @@ var regenerateCss = R.curry(function(config, file, map) {
             testPrefixOrSuffix),
         R.propOr('', 'prefix'))),
     H.Maybe,
+    R.prop('css'),
     R.prop('output'));
 
   var hasPrefixOrSuffix = R.converge(R.or, hasPrefix, hasSuffix);
@@ -161,6 +178,7 @@ var generateMap = R.curry(function(config, ids, classes, file) {
   });
 
   return R.compose(
+    // R.tap(regenerateHtml(config, file)),
     R.tap(regenerateCss(config, file)),
     R.tap(mapOutput(config)),
     mapClasses(classes),
@@ -181,14 +199,15 @@ var callbackCss = R.curry(function(config, err, files){
 var execCss = function(config){
   return R.compose(
     endTimer,
-    R.forEach(S(F.glob, S, {}, callbackCss(config))),
+    R.forEach(S(F.glob, S, {}, callbackCss(getConfig(config)))),
     H.orElse([]),
     H.of(R.prop('files')),
     H.Maybe,
     R.prop('css')
-  )(config);
+  )(getConfig(config));
 }
 
+// TODO - GET AUTO
 execCss(config);
 
 module.exports = {
