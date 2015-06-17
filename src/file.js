@@ -20,9 +20,7 @@ module.exports = function() {
     util.inherits(TransformFile, Transform);
 
     TransformFile.prototype._transform = function (chunk, enc, cb) {
-      var t = transform(chunk + '');
-      //console.log(t);
-      this.push(t, enc);
+      this.push(transform(chunk + ''), enc);
       cb();
     };
 
