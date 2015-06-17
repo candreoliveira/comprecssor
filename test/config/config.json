@@ -4,7 +4,7 @@
     "files": ["./test/css/**/*.css", "./test/css/*.css"]
   },
   "output": {
-    "prefix": "",
+    "prefix": "generated",
     "suffix": "comprecssor"
   }
 }

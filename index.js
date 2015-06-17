@@ -14,7 +14,7 @@ var S = require('spots');
 
 var F = require('./src/file.js')();
 var H = require('./src/helpers.js')(R);
-var css = require('./src/css')(R);
+var C = require('./src/css')(R);
 
 //
 // CONFIG FILES
@@ -44,7 +44,7 @@ var processCss = R.curry(function(callback, file){
   var readline = F.readStream(file);
 
   readline.on('data', function(line){
-    var t = css.tokens(line+'');
+    var t = C.tokens(line+'');
     ids = R.uniq(ids.concat(t.ids));
     classes = R.uniq(classes.concat(t.classes));
   });
@@ -55,6 +55,10 @@ var processCss = R.curry(function(callback, file){
 });
 
 var regenerateCss = R.curry(function(config, file, map) {
+  var testPrefixOrSuffix = function(x) {
+    return R.test(new RegExp(x), file);
+  };
+
   var prefix = R.compose(
     H.orElse(''),
     H.of(
@@ -81,20 +85,52 @@ var regenerateCss = R.curry(function(config, file, map) {
     H.Maybe,
     R.prop('output'));
 
-  var fileName = R.compose(
-    R.concat(prefix(config)),
-    R.replace('\.css', suffix(config)))(file);
+  var hasSuffix = R.compose(
+    H.orElse(false),
+    H.of(
+      R.compose(
+        R.ifElse(
+          R.isEmpty,
+            R.always(false),
+            testPrefixOrSuffix),
+        R.propOr('', 'suffix'))),
+    H.Maybe,
+    R.prop('output')
+  );
 
-  var replaceTokens = R.replace(new RegExp(R.keys(map).join('|'), 'g'), function(str) {
-    return map[str] ? map[str] : str;
+  var hasPrefix = R.compose(
+    H.orElse(false),
+    H.of(
+      R.compose(
+        R.ifElse(
+          R.isEmpty,
+            R.always(false),
+            testPrefixOrSuffix),
+        R.propOr('', 'prefix'))),
+    H.Maybe,
+    R.prop('output'));
+
+  var hasPrefixOrSuffix = R.converge(R.or, hasPrefix, hasSuffix);
+
+  var fileName = function(file) {
+    var fileWithSuffix = R.replace('\.css', suffix(config), file);
+    var idx = R.strLastIndexOf('/', fileWithSuffix) + 1;
+    var first = R.substringTo(idx, fileWithSuffix);
+    var last = R.substringFrom(idx, fileWithSuffix);
+    return first + prefix(config) + last;
+  };
+
+  var replaceTokens = R.replace(C.regex, function(str) {
+    var tail = R.substringFrom(1, str);
+    var head = R.substringTo(1, str);
+    return map[tail] ? head + map[tail] : str;
   });
 
-  var read = F.readStream(file);
-  var write = F.writeStream(fileName);
-
-
-  // PREFIX NOT WORKING AND REGEX IS NOT APPROPRIATE
-  read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
+  if (!hasPrefixOrSuffix(config)) {
+    var read = F.readStream(file);
+    var write = F.writeStream(fileName(file));
+    read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
+  }
 });
 
 //P generateMap : Object, Array, Array, String => Object

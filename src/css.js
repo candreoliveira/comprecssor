@@ -13,10 +13,10 @@ module.exports = function(R){
 
     var tokens = R.uniq(line.match(regex) || []);
     var ids = R.compose(
-      R.map(R.compose(R.join(''), R.tail)),
+      R.map(R.substringFrom(1)),
       getType('#'))(tokens);
     var classes = R.compose(
-      R.map(R.compose(R.join(''), R.tail)),
+      R.map(R.substringFrom(1)),
       getType('.'))(tokens);
 
     return {
@@ -28,6 +28,7 @@ module.exports = function(R){
 
 
   return {
-    tokens: getTokens
+    tokens: getTokens,
+    regex: regex
   };
 }
