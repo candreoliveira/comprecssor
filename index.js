@@ -26,12 +26,11 @@ var defaultConfig = {
     "css": {
       "prefix": "",
       "suffix": "comprecssor",
-      "path": ""
+      "path": "",
+      "shallow": false
     }
   }
 };
-
-var config = require('./test/config/config.json') || {};
 
 //
 // AUXILIARY FUNCTIONS
@@ -71,6 +70,26 @@ var regenerateCss = R.curry(function(config, file, map) {
   var testPrefixOrSuffix = function(x) {
     return R.test(new RegExp(x), file);
   };
+
+  var path = R.compose(
+    H.orElse(''),
+    H.of(
+      R.compose(
+        R.ifElse(
+          R.isEmpty,
+            R.concat('\.\/'),
+            R.compose(R.concat('\.\/'), S(R.concat, S, '\/'))),
+        R.propOr('', 'path'))),
+    H.Maybe,
+    R.prop('css'),
+    R.prop('output'));
+
+  var shallow = R.compose(
+    H.orElse(false),
+    H.of(R.propOr(false, 'shallow')),
+    H.Maybe,
+    R.prop('css'),
+    R.prop('output'));
 
   var prefix = R.compose(
     H.orElse(''),
@@ -134,7 +153,12 @@ var regenerateCss = R.curry(function(config, file, map) {
     var idx = R.strLastIndexOf('/', fileWithSuffix) + 1;
     var first = R.substringTo(idx, fileWithSuffix);
     var last = R.substringFrom(idx, fileWithSuffix);
-    return first + prefix(config) + last;
+
+    if (shallow(config)) {
+      return path(config) + prefix(config) + last;
+    }
+
+    return path(config) + first + prefix(config) + last;
   };
 
   var replaceTokens = R.replace(C.regex, function(str) {
@@ -144,9 +168,11 @@ var regenerateCss = R.curry(function(config, file, map) {
   });
 
   if (!hasPrefixOrSuffix(config)) {
-    var read = F.readStream(file);
-    var write = F.writeStream(fileName(file));
-    read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
+    F.ensureFile(fileName(file), function() {
+      var read = F.readStream(file);
+      var write = F.writeStream(fileName(file));
+      read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
+    });
   }
 });
 
@@ -187,7 +213,7 @@ var generateMap = R.curry(function(config, ids, classes, file) {
 });
 
 //P callbackCss : Object, Fn, Array => void
-var callbackCss = R.curry(function(config, err, files){
+var callbackCss = R.curry(function(config, err, files) {
   error(err);
   R.compose(R.forEach(processCss(generateMap(config))))(files);
 });
@@ -196,7 +222,7 @@ var callbackCss = R.curry(function(config, err, files){
 // EXECUTION
 //
 
-var execCss = function(config){
+var execCss = function(config) {
   return R.compose(
     endTimer,
     R.forEach(S(F.glob, S, {}, callbackCss(getConfig(config)))),
@@ -205,11 +231,17 @@ var execCss = function(config){
     H.Maybe,
     R.prop('css')
   )(getConfig(config));
-}
+};
 
-// TODO - GET AUTO
-execCss(config);
-
-module.exports = {
-  generateMap: execCss
-}
+module.exports = function(config) {
+  return {
+    exec: function() {
+      R.compose(
+        // execHtml,
+        execCss
+      )(config);
+    }
+    // css: execCss,
+    // html, execHtml
+  };
+};

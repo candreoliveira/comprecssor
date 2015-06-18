@@ -33,6 +33,8 @@ module.exports = function() {
     transformStream: transformStream,
     writeFile: fs.writeFile,
     outputJson: fse.outputJson,
+    ensureDir: fse.ensureDir,
+    ensureFile: fse.ensureFile,
     glob: glob
   }
 }
