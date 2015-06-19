@@ -1,0 +1,123 @@
+  <!-- top actions -->
+  <div class="prodGift row basket-action hidden-xs">
+    <div class="col-sm-8 col-md-9">
+      <p class="hidden-xs">
+        <a class="btn btn-primary btn-wide lbl-text"
+           data-ng-href="{{getKeepBuyingUrl(state)}}"
+           data-ng-cloak>
+          {{::'buttons.choose_more_products' | translate}}
+        </a>
+      </p>
+
+      <!-- zipcode -->
+      <form class="form-inline" id="id-test__bla"
+            data-ng-submit="getFreight(state, form)"
+            data-ng-show="hasLines(state)"
+            name="zipCodeFreight"
+            novalidate>
+        <div data-ng-hide="hasFreight(state)">
+          <h3 class="prodGift freight-title hidden-xs hidden-sm">
+            <span>{{::'freight.refer_to_delivery_time_and_shipping_for_your_cep' | translate}}</span>
+          </h3>
+          <div class="form-group">
+            <div class="float-label carlos">
+              <label class="sr-only" for="cep">
+                {{::'mobile.enter_zipcode' | translate}} <span class="hidden-xs hidden-sm">:</span>
+              </label>
+              <input class="form-control input-sm" id="superId" name="cep"
+                     pattern="\d*"
+                     type="text"
+                     placeholder="_____-___"
+                     required
+                     data-clean="true"
+                     data-mask="99999-999"
+                     data-ng-model="form.cep"
+                     data-form-helpers="mobile">
+            </div>
+          </div>
+
+          <button class="revGift btn btn-default btn-xs" type="submit">
+            <!-- @if BRAND='suba' -->
+              {{::'buttons.ok' | translate}}
+            <!-- @endif -->
+          </button>
+
+          <p class="help-block" data-ng-hide="hasFreight(state)">
+            <a href="" data-ng-click="searchCep()">
+              {{::'cep.search_cep' | translate}}
+            </a>
+          </p>
+        </div>
+
+        <div data-ng-show="hasFreight(state)">
+          <h3 class="freight-title">
+            <svg class="svg-icon svg-primary">
+              <use xlink:href="#icon-shipment"></use>
+            </svg>
+            <span>{{::'freight.check_below_the_price_and_time_to_deliver_at_the_specified' | translate}}</span>
+            <strong>{{::'commons.acronym.cep' | translate}} {{ state.freightPreview.cep | cep }}</strong>.
+            <span>&nbsp;-&nbsp;</span>
+          </h3>
+          <p class="help-block">
+            <a href="" class="btn btn-sm btn-link display-xs-block" data-ng-click="removeFreight()">
+              {{::'freight.change_zipcode' | translate}}
+            </a>
+          </p>
+        </div>
+      </form>
+
+    </div>
+
+    <div class="col-sm-4 col-md-3" data-ng-show="canProceedToCheckout(state)">
+
+      <!-- basket actions -->
+      <ul class="list-actions purchaseReason">
+        <li>
+          <!-- @if BRAND='acom' -->
+            <button class="btn title btn-primary btn-block btn-buy btn-xlg btn-thin" type="button"
+                    data-ng-click="goToPayment(state)"
+                    id="mara"
+                    data-ng-disabled="isPurchaseDisabled(state)"
+                    data-ng-cloak>
+              <svg class="svg-icon svg-icon-sm hidden-xs">
+                <use xlink:href="#icon-basket"></use>
+              </svg>
+              {{::'buttons.checkout' | translate}}
+            </button>
+          <!-- @endif -->
+          <!-- @if BRAND!='acom' -->
+            <button class="btn btn-success btn-block btn-fat" type="button"
+                    data-ng-click="goToPayment(state)"
+                    id="maravilha"
+                    data-ng-disabled="isPurchaseDisabled(state)"
+                    data-ng-cloak>
+              {{::'buttons.checkout' | translate}}
+            </button>
+          <!-- @endif -->
+        </li>
+        <li>
+          <!-- @if BRAND='acom' -->
+            <button class="btn btn-primary btn-block btn-1click btn-lg btn-thin" type="button"
+                    data-ng-click="goToQuickCheckout(state)"
+                    data-ng-disabled="isPurchaseDisabled(state)"
+                    data-ng-cloak>
+              <svg class="svg-icon hidden-xs">
+                <use xlink:href="#icon-quick-checkout"></use>
+              </svg>
+              {{::'buttons.quick_checkout' | translate}}
+            </button>
+          <!-- @endif -->
+          <!-- @if BRAND!='acom' -->
+            <button class="btn btn-success btn-block btn-fat" type="button"
+                    data-ng-click="goToQuickCheckout(state)"
+                    data-ng-disabled="isPurchaseDisabled(state)"
+                    data-ng-cloak>
+              {{::'buttons.quick_checkout' | translate}}
+            </button>
+          <!-- @endif -->
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="no-bordered hidden-xs maricota">

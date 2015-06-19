@@ -1,13 +1,24 @@
 {
   "mapFile": ".tmp/map.comprecssor.json",
-  "css": {
-    "files": ["./test/css/**/*.css", "./test/css/*.css"]
+  "input": {
+    "css": {
+      "files": ["./test/css/**/*.css", "./test/css/*.css"]
+    },
+    "html": {
+      "files": ["./test/html/**/*.html", "./test/html/*.html"]
+    }
   },
   "output": {
     "css": {
       "prefix": "generated",
       "suffix": "comprecssor",
       "path": ".tmp/css",
+      "shallow": true
+    },
+    "html": {
+      "prefix": "generated",
+      "suffix": "comprecssor",
+      "path": ".tmp/html",
       "shallow": false
     }
   }

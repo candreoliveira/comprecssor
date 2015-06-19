@@ -1,6 +1,7 @@
-var regex = /(?:(?!\/*.*\*\/)(?!\#(?:[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}))(?!\[.*)(?!.*\])[\.\#](-?[_a-zA-Z]+[_a-zA-Z0-9-]*)+)/g;
+module.exports = function(R, H, S){
+  var O = require('./output.js')(R, H, S, 'css');
+  var regex = /(?:(?!\/*.*\*\/)(?!\#(?:[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}))(?!\[.*)(?!.*\])[\.\#](-?[_a-zA-Z]+[_a-zA-Z0-9-]*)+)/g;
 
-module.exports = function(R){
   var getTokens = function(line) {
     var getType = R.curry(function(type, tokens) {
       return R.compose(
@@ -26,9 +27,16 @@ module.exports = function(R){
     }
   }
 
-
   return {
     tokens: getTokens,
-    regex: regex
+    regex: regex,
+    hasPrefixOrSuffix: O.hasPrefixOrSuffix,
+    hasPrefix: O.hasPrefix,
+    hasSuffix: O.hasSuffix,
+    suffix: O.suffix,
+    prefix: O.prefix,
+    shallow: O.shallow,
+    path: O.path,
+    generatedFileName: O.generatedFileName
   };
 }
