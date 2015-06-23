@@ -71,21 +71,32 @@ var processCss = R.curry(function(callback, file) {
   });
 });
 
-var regenerateHtml = R.curry(function(config, map, callback, file) {
-  console.log('REG', config, map);
-
+var regenerateHtml = R.curry(function(config, map, file) {
   var hasPrefixOrSuffix = M.hasPrefixOrSuffix;
   var fileName = M.generatedFileName;
 
   var replaceTokens = R.replace(M.regex, function(str) {
+    var noQuotesStr = R.replace(/[\"\']/g, '', str);
+
+    if (noQuotesStr === 'id=' || noQuotesStr === 'class=') {
+      return str;
+    }
+
+    var index = R.strIndexOf('=', noQuotesStr) + 1;
+    var type = R.substringTo(index, noQuotesStr);
+    var substr = R.substringFrom(index, noQuotesStr);
+
     return R.compose(
+      S(R.concat, S, '"'),
+      R.concat(type),
+      R.concat('"'),
       R.trim,
       R.reduce(function(acc, value) {
-        return R.concat(R.concat(map[value], ' '), acc);
+        return (map[value] ? map[value] : value) + ' ' + acc;
       }, ''),
       R.reject(R.isEmpty),
       R.split(' '),
-      R.trim);
+      R.trim)(substr);
   });
 
   if (!hasPrefixOrSuffix(config, file)) {
@@ -93,7 +104,6 @@ var regenerateHtml = R.curry(function(config, map, callback, file) {
       var read = F.readStream(file);
       var write = F.writeStream(fileName(config, file));
       read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
-      read.on('end', callback);
     });
   }
 });
@@ -191,10 +201,11 @@ module.exports = function(config) {
   return {
     exec: function() {
       var endTimer = timer('[COMPREcssOR] EXECUTION TIME');
-      R.compose(
-        endTimer,
-        execCss
-      )(config);
+      process.on("exit", function() {
+        endTimer();
+      });
+
+      execCss(config);
     }
   };
 };

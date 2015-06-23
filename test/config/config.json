@@ -11,15 +11,11 @@
   "output": {
     "css": {
       "prefix": "generated",
-      "suffix": "comprecssor",
-      "path": ".tmp/css",
-      "shallow": true
+      "suffix": "comprecssor"
     },
     "html": {
       "prefix": "generated",
-      "suffix": "comprecssor",
-      "path": ".tmp/html",
-      "shallow": false
+      "suffix": "comprecssor"
     }
   }
 }
