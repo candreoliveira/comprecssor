@@ -20,9 +20,10 @@ var M = require('./src/html.js')(R, H, S);
 //
 
 var defaultConfig = {
-  "mapFile": "map.comprecssor.json",
   "input": {},
   "output": {
+    "mapFile": "",
+    "jsFile": "",
     "css": {
       "prefix": "",
       "suffix": "comprecssor",
@@ -55,21 +56,21 @@ function timer(name) {
 
 //P processCss : Fn, String => Void
 //  Reads file to extract ids and classes and execute callback with
-var processCss = R.curry(function(callback, file) {
-  var ids = [];
-  var classes = [];
-  var readline = F.readStream(file);
+// var processCss = R.curry(function(callback, file) {
+//   var ids = oldIds || [];
+//   var classes = oldClasses || [];
+//   var readline = F.readStream(file);
 
-  readline.on('data', function(line){
-    var t = C.tokens(line+'');
-    ids = R.uniq(ids.concat(t.ids));
-    classes = R.uniq(classes.concat(t.classes));
-  });
+//   readline.on('data', function(line){
+//     var t = C.tokens(line+'');
+//     ids = R.uniq(ids.concat(t.ids));
+//     classes = R.uniq(classes.concat(t.classes));
+//   });
 
-  readline.on('end', function(){
-    callback(ids, classes, file);
-  });
-});
+//   readline.on('end', function(){
+//     callback(ids, classes, file);
+//   });
+// });
 
 var regenerateHtml = R.curry(function(config, map, file) {
   var hasPrefixOrSuffix = M.hasPrefixOrSuffix;
@@ -144,19 +145,20 @@ var execHtml = R.curry(function(config, map) {
   )(config);
 });
 
+var writeMap = R.curry(function(config, output) {
+  R.compose(
+    H.of(S(F.outputJson, S, output, {}, error)),
+    H.Maybe,
+    R.prop('mapFile'),
+    R.prop('output'))(config);
+});
+
 //P generateMap : Object, Array, Array, String => Object
 //  Generate simple classes and ids, rewrite css file and returns map object
-var generateMap = R.curry(function(config, ids, classes, file) {
+var generateMap = R.curry(function(ids, classes, file) {
   var assocIndexed = R.curry(function(indexSkip, obj, number, index) {
     obj[number] = B.toBase64(index + indexSkip);
     return obj;
-  });
-
-  var mapOutput = R.curry(function(config, output) {
-    R.compose(
-      H.of(S(F.outputJson, S, output, {}, error)),
-      H.Maybe,
-      R.prop('mapFile'))(config);
   });
 
   var mapIds = R.reduceIndexed(function(acc, elem, idx, list) {
@@ -172,9 +174,6 @@ var generateMap = R.curry(function(config, ids, classes, file) {
   });
 
   return R.compose(
-    execHtml(config),
-    R.tap(regenerateCss(config, file)),
-    R.tap(mapOutput(config)),
     mapClasses(classes),
     mapIds
   )(ids);
@@ -183,7 +182,34 @@ var generateMap = R.curry(function(config, ids, classes, file) {
 //P callbackCss : Object, Fn, Array => void
 var callbackCss = R.curry(function(config, err, files) {
   error(err);
-  R.forEach(processCss(generateMap(config)))(files);
+
+  var ids = [];
+  var classes = [];
+  var total = files.length;
+
+  // R.forEach(processCss(ids, classes,generateMap(config)))(files);
+  R.forEach(function(file) {
+    var readline = F.readStream(file);
+
+    readline.on('data', function(line) {
+      var t = C.tokens(line+'');
+      ids = R.uniq(ids.concat(t.ids));
+      classes = R.uniq(classes.concat(t.classes));
+    });
+
+    readline.on('end', function() {
+      R.compose(
+        regenerateCss(config, file),
+        generateMap(ids, classes))(file);
+
+      if (--total === 0) {
+        var map = generateMap(ids, classes, file);
+        writeMap(config, map);
+        //writeJs(config, map);
+        execHtml(config, map);
+      }
+    });
+  })(files);
 });
 
 var execCss = function(config) {

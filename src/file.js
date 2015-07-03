@@ -30,6 +30,7 @@ module.exports = function() {
   return {
     readStream: fs.createReadStream,
     writeStream: fs.createWriteStream,
+    truncate: fs.truncate,
     transformStream: transformStream,
     writeFile: fs.writeFile,
     outputJson: fse.outputJson,

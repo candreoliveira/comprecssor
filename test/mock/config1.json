@@ -1,14 +1,15 @@
 {
-  "mapFile": ".tmp/map.comprecssor.json",
   "input": {
     "css": {
-      "files": ["./test/css/**/*.css", "./test/css/*.css"]
+      "files": ["./test/mock/css/**/*.css", "./test/mock/css/*.css"]
     },
     "html": {
-      "files": ["./test/html/**/*.html", "./test/html/*.html"]
+      "files": ["./test/mock/html/**/*.html", "./test/mock/html/*.html"]
     }
   },
   "output": {
+    "mapFile": ".tmp/map.comprecssor.json",
+    "jsFile": ".tmp/comprecssor.js",
     "css": {
       "prefix": "generated",
       "suffix": "comprecssor"
