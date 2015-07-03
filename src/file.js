@@ -33,6 +33,7 @@ module.exports = function() {
     truncate: fs.truncate,
     transformStream: transformStream,
     writeFile: fs.writeFile,
+    readFileSync: fs.readFileSync,
     outputJson: fse.outputJson,
     ensureDir: fse.ensureDir,
     ensureFile: fse.ensureFile,

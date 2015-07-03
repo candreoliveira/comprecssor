@@ -1,0 +1,40 @@
+*{ text-align: center; }
+[href='http://google.com']{ text-align: center; }
+a:hover{ text-align: center; }
+p,a.Q,div::after{text-align: center;}
+
+p,a.Q+#A.R,div::after{text-align: center;}
+p, div.I .O:hover > a.S::before {
+  font-size: 18px;
+}
+
+p,div{
+ /* div.scss */
+ /*div.scss*/
+ height: 10px;
+}
+
+p{} div.T{ height:5px }
+.U .V .W {
+  left: -9999px;
+  position: fixed;
+  @inlcude opacity(0.5);
+}
+
+.E a {}
+
+#B {}
+
+/* line 243, ../../../../statics-default/scss/components/_gift_pack.scss */
+.E a{
+  clear: both;
+  display: block;
+  padding: 15px 0 0 0;
+}
+
+#C{}
+
+#D{ height: 3px;}
+
+.X{ height: 3px;}
+.Y{ height: 3px;}

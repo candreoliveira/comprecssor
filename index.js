@@ -94,6 +94,7 @@ var regenerateHtml = R.curry(function(config, map, file) {
 var regenerateCss = R.curry(function(config, file, map) {
   var hasPrefixOrSuffix = C.hasPrefixOrSuffix;
   var fileName = C.generatedFileName;
+  var minFileName = C.generatedMinFileName;
 
   var replaceTokens = R.replace(C.regex, function(str) {
     var tail = R.substringFrom(1, str);
@@ -105,7 +106,15 @@ var regenerateCss = R.curry(function(config, file, map) {
     F.ensureFile(fileName(config, file), function() {
       var read = F.readStream(file);
       var write = F.writeStream(fileName(config, file));
-      read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
+      read
+        .pipe(F.transformStream(replaceTokens, {objectMode: true}))
+        .pipe(write)
+        .on('finish', function () {
+          F.writeFile(
+            minFileName(config, file),
+            C.uglify(F.readFileSync(fileName(config, file))),
+            error);
+        });
     });
   }
 });

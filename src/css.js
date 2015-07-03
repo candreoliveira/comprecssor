@@ -1,6 +1,12 @@
+var uglifycss = require('uglifycss');
+
 module.exports = function(R, H, S){
   var O = require('./output.js')(R, H, S, 'css');
   var regex = /(?:(?!\/*.*\*\/)(?!\#(?:[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}))(?!\[.*)(?!.*\])[\.\#](-?[_a-zA-Z]+[_a-zA-Z0-9-]*)+)/g;
+
+  var uglify = function(content) {
+    return content;//uglifycss.processString(content, {expandVars: true, uglyComments: true});
+  }
 
   var getTokens = function(line) {
     var getType = R.curry(function(type, tokens) {
@@ -37,6 +43,8 @@ module.exports = function(R, H, S){
     prefix: O.prefix,
     shallow: O.shallow,
     path: O.path,
-    generatedFileName: O.generatedFileName
+    generatedFileName: O.generatedFileName,
+    generatedMinFileName: O.generatedMinFileName,
+    uglify: uglify
   };
 }

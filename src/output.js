@@ -90,8 +90,9 @@ module.exports = function(R, H, S, type) {
   //P hasPrefixOrSuffix : Config => Boolean
   var hasPrefixOrSuffix = R.converge(R.or, hasPrefix, hasSuffix);
 
-  var fileName = R.curry(function(config, file) {
-    var fileWithSuffix = R.replace(R.concat('\.', type), suffix(config), file);
+  var fileName = R.curry(function(min, config, file) {
+    var suf = suffix(config);
+    var fileWithSuffix = R.replace(R.concat('\.', type), (min ? ('.min' + suf) : suf), file);
     var idx = R.strLastIndexOf('/', fileWithSuffix) + 1;
     var first = R.substringTo(idx, fileWithSuffix);
     var last = R.substringFrom(idx, fileWithSuffix);
@@ -111,6 +112,7 @@ module.exports = function(R, H, S, type) {
     prefix: prefix,
     shallow: shallow,
     path: path,
-    generatedFileName: fileName
+    generatedFileName: fileName(false),
+    generatedMinFileName: fileName(true)
   };
 }
