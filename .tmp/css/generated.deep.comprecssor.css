@@ -1,0 +1,62 @@
+/* line 249, ../../../../statics-default/scss/acom/components/_gift_pack.scss */
+.E .F {
+  color: #828282;
+}
+/* line 254, ../../../../statics-default/scss/acom/components/_gift_pack.scss */
+.E .G {
+  float: left;
+  font-size: 12px;
+  margin: 0 0 0 5px;
+}
+/* line 261, ../../../../statics-default/scss/acom/components/_gift_pack.scss */
+.E a {
+  color: #e60014;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+/* line 268, ../../../../statics-default/scss/acom/components/_gift_pack.scss */
+.E span {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* line 291, ../../../../statics-default/scss/acom/components/_gift_pack.scss */
+.H {
+  margin: 0 0 10px;
+  overflow: hidden;
+}
+
+/* line 12, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I {
+  margin-bottom: 20px;
+}
+/* line 16, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I .J {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+/* line 22, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I .K {
+  border: #ccc 1px solid;
+}
+/* line 25, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I .K.L {
+  border: #e60014 1px solid;
+}
+/* line 31, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I .M {
+  display: inline-block;
+  padding: 25px 10px;
+  width: 220px;
+}
+/* line 38, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I .N {
+  display: block;
+}
+/* line 43, ../../../../statics-default/scss/acom/components/_purchase_reason.scss */
+.I .O {
+  font-size: 18px;
+}
+
+.P{}

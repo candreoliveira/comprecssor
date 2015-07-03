@@ -54,24 +54,6 @@ function timer(name) {
   }
 }
 
-//P processCss : Fn, String => Void
-//  Reads file to extract ids and classes and execute callback with
-// var processCss = R.curry(function(callback, file) {
-//   var ids = oldIds || [];
-//   var classes = oldClasses || [];
-//   var readline = F.readStream(file);
-
-//   readline.on('data', function(line){
-//     var t = C.tokens(line+'');
-//     ids = R.uniq(ids.concat(t.ids));
-//     classes = R.uniq(classes.concat(t.classes));
-//   });
-
-//   readline.on('end', function(){
-//     callback(ids, classes, file);
-//   });
-// });
-
 var regenerateHtml = R.curry(function(config, map, file) {
   var hasPrefixOrSuffix = M.hasPrefixOrSuffix;
   var fileName = M.generatedFileName;
@@ -141,7 +123,7 @@ var execHtml = R.curry(function(config, map) {
     H.of(R.prop('files')),
     H.Maybe,
     R.prop('html'),
-    R.prop('input')
+    R.propOr({}, 'input')
   )(config);
 });
 
@@ -150,7 +132,21 @@ var writeMap = R.curry(function(config, output) {
     H.of(S(F.outputJson, S, output, {}, error)),
     H.Maybe,
     R.prop('mapFile'),
-    R.prop('output'))(config);
+    R.propOr({}, 'output'))(config);
+});
+
+var writeJs = R.curry(function(config, output) {
+  var file = R.compose(
+    R.propOr(false, 'jsFile'),
+    R.propOr({}, 'output'))(config);
+
+  if (file) {
+    var content = '(function() {\n';
+    content += '\tvar map =\t' + JSON.stringify(output, null, 4) + ';\n';
+    content += '\twindow.comprecssor = function(key) {\n\t\treturn map[key];\n\t}\n';
+    content += '})();';
+    F.writeFile(file, content, error);
+  }
 });
 
 //P generateMap : Object, Array, Array, String => Object
@@ -187,7 +183,6 @@ var callbackCss = R.curry(function(config, err, files) {
   var classes = [];
   var total = files.length;
 
-  // R.forEach(processCss(ids, classes,generateMap(config)))(files);
   R.forEach(function(file) {
     var readline = F.readStream(file);
 
@@ -205,7 +200,7 @@ var callbackCss = R.curry(function(config, err, files) {
       if (--total === 0) {
         var map = generateMap(ids, classes, file);
         writeMap(config, map);
-        //writeJs(config, map);
+        writeJs(config, map);
         execHtml(config, map);
       }
     });
@@ -216,10 +211,10 @@ var execCss = function(config) {
   R.compose(
     R.forEach(S(F.glob, S, {}, callbackCss(getConfig(config)))),
     H.orElse([]),
-    H.of(R.prop('files')),
+    H.of(R.propOr([], 'files')),
     H.Maybe,
     R.prop('css'),
-    R.prop('input')
+    R.propOr({}, 'input')
   )(getConfig(config));
 };
 

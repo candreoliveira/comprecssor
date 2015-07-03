@@ -12,11 +12,15 @@
     "jsFile": ".tmp/comprecssor.js",
     "css": {
       "prefix": "generated",
-      "suffix": "comprecssor"
+      "suffix": "comprecssor",
+      "path": ".tmp/css",
+      "shallow": true
     },
     "html": {
       "prefix": "generated",
-      "suffix": "comprecssor"
+      "suffix": "comprecssor",
+      "path": ".tmp/html",
+      "shallow": true
     }
   }
 }
