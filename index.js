@@ -57,6 +57,7 @@ function timer(name) {
 var regenerateHtml = R.curry(function(config, map, file) {
   var hasPrefixOrSuffix = M.hasPrefixOrSuffix;
   var fileName = M.generatedFileName;
+  var minFileName = M.generatedMinFileName;
 
   var replaceTokens = R.replace(M.regex, function(str) {
     var noQuotesStr = R.replace(/[\"\']/g, '', str);
@@ -86,7 +87,30 @@ var regenerateHtml = R.curry(function(config, map, file) {
     F.ensureFile(fileName(config, file), function() {
       var read = F.readStream(file);
       var write = F.writeStream(fileName(config, file));
-      read.pipe(F.transformStream(replaceTokens, {objectMode: true})).pipe(write);
+      read
+        .pipe(F.transformStream(replaceTokens, {objectMode: true}))
+        .pipe(write)
+        .on('finish', function () {
+          // TODO: Permit override
+          var options = {
+            // removeAttributeQuotes: true,
+            customAttrCollapse: /ng\-class/,
+            minifyURLs: true,
+            minifyCSS: true,
+            minifyJS: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            collapseWhitespace: true,
+            collapseBooleanAttributes: true,
+            removeScriptTypeAttributes: true,
+            removeStyleLinkTypeAttributes: true
+          };
+
+          F.writeFile(
+            minFileName(config, file),
+            M.uglify(F.readFileSync(fileName(config, file)).toString(), options),
+            error);
+        });
     });
   }
 });
@@ -110,9 +134,10 @@ var regenerateCss = R.curry(function(config, file, map) {
         .pipe(F.transformStream(replaceTokens, {objectMode: true}))
         .pipe(write)
         .on('finish', function () {
+          // TODO: Use clean-css and permit options override
           F.writeFile(
             minFileName(config, file),
-            C.uglify(F.readFileSync(fileName(config, file))),
+            C.uglify([fileName(config, file)]),
             error);
         });
     });

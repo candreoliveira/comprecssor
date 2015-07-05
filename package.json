@@ -1,5 +1,5 @@
 {
-  "name": "chicss",
+  "name": "comprecssor",
   "version": "0.0.1",
   "description": "Decreases css and html file size up to 80%",
   "main": "index.js",
@@ -12,13 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:candreoliveira/chicss.git"
+    "url": "git@github.com:candreoliveira/comprecssor.git"
   },
   "keywords": [
     "node",
     "io",
     "css",
     "html",
+    "js",
     "compress",
     "zip",
     "chic",
@@ -30,11 +31,14 @@
   "dependencies": {
     "async": "^0.9.0",
     "bases": "^0.2.1",
+    "clean-css": "^3.3.5",
     "fs-extra": "^0.18.3",
     "glob": "^5.0.5",
+    "html-minifier": "^0.7.2",
     "ramda": "^0.13.0",
     "ramda-fantasy": "^0.2.0",
     "spots": "^0.5.0",
+    "uglify-js": "^2.4.23",
     "uglifycss": "0.0.15"
   },
   "devDependencies": {
