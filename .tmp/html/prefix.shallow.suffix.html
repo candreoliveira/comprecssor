@@ -1,8 +1,8 @@
   <!-- top actions -->
-  <div class="hidden-xs basket-action row E">
+  <div class="hidden-xs basket-action row N">
     <div class="col-md-9 col-sm-8">
       <p class="hidden-xs">
-        <a class="F btn-wide btn-primary btn"
+        <a class="lbl-text btn-wide btn-primary btn"
            data-ng-href="{{getKeepBuyingUrl(state)}}"
            data-ng-cloak>
           {{::'buttons.choose_more_products' | translate}}
@@ -16,11 +16,11 @@
             name="zipCodeFreight"
             novalidate>
         <div data-ng-hide="hasFreight(state)">
-          <h3 class="hidden-sm hidden-xs freight-title E">
+          <h3 class="hidden-sm hidden-xs freight-title N">
             <span>{{::'freight.refer_to_delivery_time_and_shipping_for_your_cep' | translate}}</span>
           </h3>
           <div class="form-group">
-            <div class="T float-label">
+            <div class="J float-label">
               <label class="sr-only" for="cep">
                 {{::'mobile.enter_zipcode' | translate}} <span class="hidden-sm hidden-xs">:</span>
               </label>
@@ -36,7 +36,7 @@
             </div>
           </div>
 
-          <button class="btn-xs btn-default btn H" type="submit">
+          <button class="btn-xs btn-default btn revGift" type="submit">
             <!-- @if BRAND='suba' -->
               {{::'buttons.ok' | translate}}
             <!-- @endif -->
@@ -71,10 +71,10 @@
     <div class="col-md-3 col-sm-4" data-ng-show="canProceedToCheckout(state)">
 
       <!-- basket actions -->
-      <ul class="I list-actions">
+      <ul class="G list-actions">
         <li>
           <!-- @if BRAND='acom' -->
-            <button class="btn-thin btn-xlg btn-buy btn-block btn-primary J btn" type="button"
+            <button class="btn-thin btn-xlg btn-buy btn-block btn-primary title btn" type="button"
                     data-ng-click="goToPayment(state)"
                     id="C"
                     data-ng-disabled="isPurchaseDisabled(state)"
@@ -120,4 +120,4 @@
     </div>
   </div>
 
-  <hr class="P hidden-xs no-bordered">
+  <hr class="maricota hidden-xs no-bordered">

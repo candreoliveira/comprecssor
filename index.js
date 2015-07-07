@@ -13,6 +13,7 @@ var S = require('spots');
 var F = require('./src/file.js')();
 var H = require('./src/helpers.js')(R);
 var C = require('./src/css.js')(R, H, S);
+var J = require('./src/javascript.js')(R, H, S);
 var M = require('./src/html.js')(R, H, S);
 
 //
@@ -91,20 +92,22 @@ var regenerateHtml = R.curry(function(config, map, file) {
         .pipe(F.transformStream(replaceTokens, {objectMode: true}))
         .pipe(write)
         .on('finish', function () {
-          // TODO: Permit override
-          var options = {
-            // removeAttributeQuotes: true,
-            customAttrCollapse: /ng\-class/,
-            minifyURLs: true,
-            minifyCSS: true,
-            minifyJS: true,
-            removeRedundantAttributes: true,
-            useShortDoctype: true,
-            collapseWhitespace: true,
-            collapseBooleanAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true
-          };
+          var options = R.compose(
+            R.merge({
+              customAttrCollapse: /ng\-class/,
+              minifyURLs: true,
+              minifyCSS: true,
+              minifyJS: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              collapseWhitespace: true,
+              collapseBooleanAttributes: true,
+              removeScriptTypeAttributes: true,
+              removeStyleLinkTypeAttributes: true
+            }),
+            R.propOr({}, 'htmlminifierOptions'),
+            R.propOr({}, 'html'),
+            R.propOr({}, 'output'))(config);
 
           F.writeFile(
             minFileName(config, file),
@@ -127,17 +130,28 @@ var regenerateCss = R.curry(function(config, file, map) {
   });
 
   if (!hasPrefixOrSuffix(config, file)) {
-    F.ensureFile(fileName(config, file), function() {
+    var fileNameBuffer = fileName(config, file);
+    F.ensureFile(fileNameBuffer, function() {
       var read = F.readStream(file);
-      var write = F.writeStream(fileName(config, file));
+      var write = F.writeStream(fileNameBuffer);
       read
         .pipe(F.transformStream(replaceTokens, {objectMode: true}))
         .pipe(write)
         .on('finish', function () {
-          // TODO: Use clean-css and permit options override
+          var content = F.readFileSync(fileNameBuffer.toString());
+          // var options = R.compose(
+          //   R.merge({
+          //     sourceMap: true,
+          //     target: R.substringTo(R.strLastIndexOf('\/', fileNameBuffer.toString()), fileNameBuffer.toString())
+          //   }),
+          //   R.propOr({}, 'cleancssOptions'),
+          //   R.propOr({}, 'css'),
+          //   R.propOr({}, 'output'),
+          // )(config);
+
           F.writeFile(
             minFileName(config, file),
-            C.uglify([fileName(config, file)]),
+            C.uglify(content, {}).styles,
             error);
         });
     });
@@ -171,7 +185,8 @@ var writeMap = R.curry(function(config, output) {
 
 var writeJs = R.curry(function(config, output) {
   var file = R.compose(
-    R.propOr(false, 'jsFile'),
+    R.propOr(false, 'file'),
+    R.propOr({}, 'js'),
     R.propOr({}, 'output'))(config);
 
   if (file) {
@@ -179,7 +194,37 @@ var writeJs = R.curry(function(config, output) {
     content += '\tvar map =\t' + JSON.stringify(output, null, 4) + ';\n';
     content += '\twindow.comprecssor = function(key) {\n\t\treturn map[key];\n\t}\n';
     content += '})();';
-    F.writeFile(file, content, error);
+
+    F.ensureFile(file, function() {
+      F.writeFile(file, content, error);
+    });
+
+    var minFile = R.ifElse(
+      R.compose(
+        R.gt(-1),
+        R.strIndexOf('\.js')),
+          R.replace(/\.js/, '\.min\.js'),
+          S(R.concat, S, '\.min\.js'))(file);
+
+    var minMap = R.concat(minFile, '.map');
+    var options = R.compose(
+      R.merge({
+        fromString: true,
+        outSourceMap: minMap
+      }),
+      R.propOr({}, 'uglifyOptions'),
+      R.propOr({}, 'js'),
+      R.propOr({}, 'output'))(config);
+
+    var minContent = J.uglify(content, options);
+
+    F.ensureFile(minFile, function() {
+      F.writeFile(minFile, minContent.code, error);
+    });
+
+    F.ensureFile(minMap, function() {
+      F.writeFile(minMap, minContent.map, error);
+    });
   }
 });
 

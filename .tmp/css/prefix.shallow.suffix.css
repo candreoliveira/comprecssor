@@ -1,10 +1,10 @@
 *{ text-align: center; }
 [href='http://google.com']{ text-align: center; }
 a:hover{ text-align: center; }
-p,a.Q,div::after{text-align: center;}
+p,a.E,div::after{text-align: center;}
 
-p,a.Q+#A.R,div::after{text-align: center;}
-p, div.I .O:hover > a.S::before {
+p,a.E+#A.F,div::after{text-align: center;}
+p, div.G .H:hover > a.I::before {
   font-size: 18px;
 }
 
@@ -14,19 +14,19 @@ p,div{
  height: 10px;
 }
 
-p{} div.T{ height:5px }
-.U .V .W {
+p{} div.J{ height:5px }
+.K .L .M {
   left: -9999px;
   position: fixed;
   @inlcude opacity(0.5);
 }
 
-.E a {}
+.N a {}
 
 #B {}
 
 /* line 243, ../../../../statics-default/scss/components/_gift_pack.scss */
-.E a{
+.N a{
   clear: both;
   display: block;
   padding: 15px 0 0 0;
@@ -36,5 +36,5 @@ p{} div.T{ height:5px }
 
 #D{ height: 3px;}
 
-.X{ height: 3px;}
-.Y{ height: 3px;}
+.O{ height: 3px;}
+.P{ height: 3px;}

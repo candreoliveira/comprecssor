@@ -9,18 +9,35 @@
   },
   "output": {
     "mapFile": ".tmp/map.comprecssor.json",
-    "jsFile": ".tmp/comprecssor.js",
+    "js": {
+      "file": ".tmp/comprecssor.js",
+      "uglifyOptions": {
+        "fromString": true,
+        "outSourceMap": ".tmp/comprecssor.min.js.map"
+      }
+    },
     "css": {
-      "prefix": "generated",
-      "suffix": "comprecssor",
+      "prefix": "prefix",
+      "suffix": "suffix",
       "path": ".tmp/css",
       "shallow": true
     },
     "html": {
-      "prefix": "generated",
-      "suffix": "comprecssor",
+      "prefix": "prefix",
+      "suffix": "suffix",
       "path": ".tmp/html",
-      "shallow": true
+      "shallow": true,
+      "htmlminifierOptions": {
+        "minifyURLs": true,
+        "minifyCSS": true,
+        "minifyJS": true,
+        "removeRedundantAttributes": true,
+        "useShortDoctype": true,
+        "collapseWhitespace": true,
+        "collapseBooleanAttributes": true,
+        "removeScriptTypeAttributes": true,
+        "removeStyleLinkTypeAttributes": true
+      }
     }
   }
 }
