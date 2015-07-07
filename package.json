@@ -1,11 +1,8 @@
 {
   "name": "comprecssor",
   "version": "0.0.1",
-  "description": "Decreases css and html file size up to 80%",
+  "description": "Decreases css and html file size up to 40%",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "npm test",
     "start": "node test/test.js"
